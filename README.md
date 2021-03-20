@@ -1,23 +1,4 @@
-# AnyCloud Example: MQTT Client
-
-This code example demonstrates implementing an MQTT Client using the [MQTT Client library](https://github.com/cypresssemiconductorco/mqtt) for Cypress connectivity devices. The library uses the AWS IoT Device SDK MQTT Client library that includes an MQTT 3.1.1 Client.
-
-In this example, the MQTT Client RTOS task establishes a connection with the configured MQTT Broker, and creates two tasks - Publisher and Subscriber. The Publisher task publishes messages on a topic when the user button is pressed. The Subscriber task subscribes to the same topic and controls the user LED based on the messages received.
-
-
-**Sequence of Operation**
-
-1. The user button is pressed.
-
-2. The GPIO interrupt service routine (ISR) notifies the Publisher task.
-
-3. The Publisher task publishes a message on a topic.
-
-4. The MQTT broker sends back the message to the MQTT Client because it is also subscribed to the same topic.
-
-5. When the message is received, the Subscriber task turns the LED ON or OFF. As a result, the user LED toggles every time the user presses the button.
-
-[Provide feedback on this Code Example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjk4ODkiLCJTcGVjIE51bWJlciI6IjAwMi0yOTg4OSIsIkRvYyBUaXRsZSI6IkFueUNsb3VkIEV4YW1wbGU6IE1RVFQgQ2xpZW50IiwicmlkIjoic21yeCIsIkRvYyB2ZXJzaW9uIjoiMi4wLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6IlBTT0MifQ==)
+# NanoDrone II PSoC 6
 
 
 ## Requirements
@@ -185,7 +166,7 @@ Various CLI tools include a `-h` option that prints help information to the term
 
          - **Other MQTT Client configuration macros:**
 
-             1. `MQTT_TOPIC`: The MQTT topic common to both the Publisher and Subscriber in this example.
+             1. `MQTT_TOPIC_NANODRONE`: The MQTT topic common to both the Publisher and Subscriber in this example.
              2. `ENABLE_LWT_MESSAGE`: Set to `1` to use MQTT's Last Will and Testament (LWT) feature. This is an MQTT message that will be published by the MQTT Broker if the MQTT connection is unexpectedly closed.
              3. `GENERATE_UNIQUE_CLIENT_ID`: Every active MQTT connection must have a unique client identifier. If this macro is set to `1`, the device will generate a unique client identifier by appending a timestamp to the string specified by the `MQTT_CLIENT_IDENTIFIER` macro. This feature is useful if you are using the same code on multiple kits simultaneously.
 
@@ -222,24 +203,6 @@ Various CLI tools include a `-h` option that prints help information to the term
    **Figure 1. UART Terminal Showing the Application Initialization Status**
 
    ![](images/application_initialization.png)
-
-5. Once the initialization is complete, confirm that the message *"Press the user button (SW2) to publish "TURN ON"/"TURN OFF" on the topic 'ledstatus'..."* is printed on the UART terminal. This message may vary depending on the MQTT topic and publish messages that are configured in the *mqtt_client_config.h* file.
-
-6. Press the user button (SW2) on the kit to toggle the LED state.
-
-7. Confirm that the user LED state is toggled and the messages received on the subscribed topic are printed on the UART terminal.
-
-   **Figure 2. Messages Received on the Subscribed Topic**
-
-   ![](images/received_messages.png)
-
-This example can be programmed on multiple kits (*Only when `GENERATE_UNIQUE_CLIENT_ID` is set to `1`*); the user LEDs on all the kits will synchronously toggle with button presses on any kit.
-
-Alternatively, the publish and subscribe functionalities of the MQTT Client can be individually verified if the MQTT Broker supports a Test MQTT Client like the AWS IoT.
-
-- *To verify the subscribe functionality*: Using the Test MQTT Client, publish messages such as "TURN ON" and "TURN OFF" on the topic specified by the `MQTT_TOPIC` macro in *mqtt_client_config.h* to control the LED state on the kit.
-
-- *To verify the publish functionality*: From the Test MQTT Client, subscribe to the MQTT topic specified by the `MQTT_TOPIC` macro and confirm that the messages published by the kit are displayed on the Test MQTT Client's console.
 
 
 ## Debugging
