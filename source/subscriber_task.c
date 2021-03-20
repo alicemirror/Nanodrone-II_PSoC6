@@ -51,6 +51,7 @@
 
 /* Configuration file for MQTT client */
 #include "mqtt_client_config.h"
+#include "mqtt_topic_config.h"
 
 /* Middleware libraries */
 #include "cy_retarget_io.h"
@@ -83,8 +84,8 @@ uint32_t current_device_state = DEVICE_OFF_STATE;
 IotMqttSubscription_t subscribeInfo =
 {
     .qos = (IotMqttQos_t) MQTT_MESSAGES_QOS,
-    .pTopicFilter = MQTT_TOPIC,
-    .topicFilterLength = (sizeof(MQTT_TOPIC) - 1),
+    .pTopicFilter = MQTT_TOPIC_NANODRONE,
+    .topicFilterLength = (sizeof(MQTT_TOPIC_NANODRONE) - 1),
     /* Configure the callback function to handle incoming MQTT messages */
     .callback.function = mqtt_subscription_callback
 };

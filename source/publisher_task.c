@@ -52,6 +52,7 @@
 
 /* Configuration file for MQTT client */
 #include "mqtt_client_config.h"
+#include "mqtt_topic_config.h"
 
 /* Middleware libraries */
 #include "cy_retarget_io.h"
@@ -81,8 +82,8 @@ TaskHandle_t publisher_task_handle;
 IotMqttPublishInfo_t publishInfo =
 {
     .qos = (IotMqttQos_t) MQTT_MESSAGES_QOS,
-    .pTopicName = MQTT_TOPIC,
-    .topicNameLength = (sizeof(MQTT_TOPIC) - 1),
+    .pTopicName = MQTT_TOPIC_NANODRONE,
+    .topicNameLength = (sizeof(MQTT_TOPIC_NANODRONE) - 1),
     .retryMs = PUBLISH_RETRY_MS,
     .retryLimit = PUBLISH_RETRY_LIMIT
 };
