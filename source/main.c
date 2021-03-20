@@ -102,7 +102,7 @@ int main()
     /* \x1b[2J\x1b[;H - ANSI ESC sequence to clear screen. */
     printf("\x1b[2J\x1b[;H");
     printf("===============================================================\n");
-    printf("CE229889 - AnyCloud Example: MQTT Client\n");
+    printf("Nanodrone II - MQTT + UART Tasks\n");
     printf("===============================================================\n\n");
 
     /* Create the MQTT Client task. */
