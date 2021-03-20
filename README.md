@@ -221,7 +221,7 @@ The MQTT connection is configured to be secure by default; the secure connection
 
 After a successful MQTT connection, the Subscriber and Publisher tasks are created. The MQTT Client task then waits for messages from the other two tasks and callbacks, and handles the cleanup operations of various libraries if the messages indicate failure.
 
-The Subscriber task initializes the user LED GPIO and subscribes to messages on the topic specified by the `MQTT_TOPIC` macro that can be configured in *mqtt_client_config.h*. When the subscribe operation fails, a message is sent to the MQTT Client task over a message queue. When the Subscriber task receives a message from the Broker, it turns the user LED ON or OFF depending on whether the received message is "TURN ON" or "TURN OFF".
+The Subscriber task initializes the user LED GPIO and subscribes to messages on the topic specified by the `MQTT_TOPIC_NANODRONE` macro that can be configured in *mqtt_client_config.h*. When the subscribe operation fails, a message is sent to the MQTT Client task over a message queue. When the Subscriber task receives a message from the Broker, it turns the user LED ON or OFF depending on whether the received message is "TURN ON" or "TURN OFF".
 
 The Publisher task sets up the user button GPIO and configures an interrupt for the button. The ISR notifies the Publisher task upon a button press. The Publisher task then publishes messages (*TURN ON* / *TURN OFF*) on the topic specified by the `MQTT_TOPIC` macro. When the publish operation fails, a message is sent over a queue to the MQTT Client task.
 
