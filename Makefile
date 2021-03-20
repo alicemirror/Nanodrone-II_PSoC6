@@ -40,7 +40,7 @@ TARGET=CY8CPROTO-062-4343W
 # 
 # If APPNAME is edited, ensure to update or regenerate launch 
 # configurations for your IDE.
-APPNAME=mtb-example-anycloud-mqtt-client
+APPNAME=NanodroneIIPSoC6
 
 # Name of toolchain to use. Options include:
 #
@@ -59,7 +59,7 @@ TOOLCHAIN=GCC_ARM
 # 
 # If CONFIG is manually edited, ensure to update or regenerate launch configurations 
 # for your IDE.
-CONFIG=Debug
+CONFIG=Custom
 
 # If set to "true" or "1", display full command-lines when building.
 VERBOSE=
@@ -127,7 +127,7 @@ VFP_SELECT=
 #
 # NOTE: Includes and defines should use the INCLUDES and DEFINES variable
 # above.
-CFLAGS=
+CFLAGS=-O0
 
 # Additional / custom C++ compiler flags.
 #

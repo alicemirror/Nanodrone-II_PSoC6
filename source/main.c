@@ -45,6 +45,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "uart_task.h"
+#include "telemetry_receive_task.h"
+#include "telemetry_queue.h"
+
+/* This enables RTOS aware debugging. */
+volatile int uxTopUsedPriority;
+
+
+
 /******************************************************************************
 * Global Variables
 ******************************************************************************/
@@ -79,8 +88,12 @@ int main()
     /* To avoid compiler warnings. */
     (void) result;
 
+    initUART();
+
     /* Enable global interrupts. */
     __enable_irq();
+
+    initTelemetryQueue();
 
     /* Initialize retarget-io to use the debug UART port. */
     cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX,
@@ -95,6 +108,14 @@ int main()
     /* Create the MQTT Client task. */
     xTaskCreate(mqtt_client_task, "MQTT Client task", MQTT_CLIENT_TASK_STACK_SIZE, 
                 NULL, MQTT_CLIENT_TASK_PRIORITY, NULL);
+
+    /* Create the TELEMETRY RECEIVE task. */
+    xTaskCreate(telemetry_receive_task, "TELEMETRY RECEIVE task", TELEMETRY_RECEIVE_TASK_STACK_SIZE,
+        NULL, TELEMETRY_RECEIVE_TASK_PRIORITY, NULL);
+
+    /* Create the UART task. */
+    xTaskCreate(uart_task, "UART task", UART_TASK_STACK_SIZE,
+        NULL, UART_TASK_PRIORITY, NULL);
 
     /* Start the FreeRTOS scheduler. */
     vTaskStartScheduler();
