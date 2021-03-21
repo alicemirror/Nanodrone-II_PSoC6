@@ -102,8 +102,8 @@ uint8_t message[TELEMETRY_MESSAGE_SIZE];
  * Function Name: publisher_task
  ******************************************************************************
  * Summary:
- *  Task that handles initialization of the user button GPIO, configuration of
- *  ISR, and publishing of MQTT messages to control the device that is actuated
+ *  Task that handles initialization of the TELEMETRY message queue,
+ *  and publishing of MQTT messages to control the device that is actuated
  *  by the subscriber task.
  *
  * Parameters:
@@ -117,9 +117,6 @@ void publisher_task(void *pvParameters)
 {
     /* Status variable */
     int result;
-
-    /* Variable to receive new device state from the user button ISR. */
-//    uint32_t publish_device_state;
 
     /* Status of MQTT publish operation that will be communicated to MQTT 
      * client task using a message queue in case of failure during publish.
@@ -146,21 +143,12 @@ void publisher_task(void *pvParameters)
     	    if(xQueueReceive(telemetry_queue, message, portMAX_DELAY ))     {
     	      cyhal_gpio_toggle(CYBSP_USER_LED);
 
-    	      /* Assign the publish message payload according to received device state. */
-//    	      publishInfo.pPayload = MQTT_DEVICE_OFF_MESSAGE;
-//
-//    	      if (publish_device_state == DEVICE_ON_STATE)
-//    	      {
-//    	    	  publishInfo.pPayload = MQTT_DEVICE_ON_MESSAGE;
-//    	      }
-
-//    	      memcpy(publishInfo.pPayload, message, TELEMETRY_MESSAGE_SIZE);
     	      publishInfo.pPayload = message;
     	      publishInfo.payloadLength = TELEMETRY_MESSAGE_SIZE;
 
-//    	      printf("Publishing '%s' on the topic '%s'\n\n",
-//    	    		  (char *)publishInfo.pPayload,
-//					  publishInfo.pTopicName);
+    	      printf("Publishing '%s' on the topic '%s'\n\n",
+    	    		  (char *)publishInfo.pPayload,
+					  publishInfo.pTopicName);
 
     	      /* Publish the MQTT message with the configured settings. */
     	      result = IotMqtt_PublishSync(mqttConnection,
@@ -173,11 +161,13 @@ void publisher_task(void *pvParameters)
     	    	  /* Inform the MQTT client task about the publish failure and suspend
     	    	   * the task for it to be killed by the MQTT client task later.
     	    	   */
-//    	    	  printf("MQTT Publish failed with error '%s'.\n\n",
-//    	    			  IotMqtt_strerror((IotMqttError_t) result));
+    	    	  printf("MQTT Publish failed with error '%s'.\n\n",
+    	    			  IotMqtt_strerror((IotMqttError_t) result));
     	    	  xQueueOverwrite(mqtt_status_q, &mqtt_publish_status);
     	    	  vTaskSuspend( NULL );
     	      }
+
+    	      cyhal_gpio_toggle(CYBSP_USER_LED);
 
 
     	    }
@@ -192,9 +182,7 @@ void publisher_task(void *pvParameters)
  * Function Name: publisher_cleanup
  ******************************************************************************
  * Summary:
- *  Cleanup function for the publisher task that disables the user button  
- *  interrupt. This operation needs to be necessarily performed before deleting  
- *  the publisher task.
+ *  Cleanup function for the publisher task
  *
  * Parameters:
  *  void
@@ -205,10 +193,6 @@ void publisher_task(void *pvParameters)
  ******************************************************************************/
 void publisher_cleanup(void)
 {
-//    /* Deregister the ISR and disable the interrupt on the user button. */
-//    cyhal_gpio_register_callback(CYBSP_USER_BTN, NULL, NULL);
-//    cyhal_gpio_enable_event(CYBSP_USER_BTN, CYHAL_GPIO_IRQ_FALL,
-//                            USER_BTN_INTR_PRIORITY, false);
 }
 
 /* [] END OF FILE */
