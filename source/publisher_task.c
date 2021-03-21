@@ -140,6 +140,7 @@ void publisher_task(void *pvParameters)
 
 
     	  for( ;; ) {
+
     	    if(xQueueReceive(telemetry_queue, message, portMAX_DELAY ))     {
     	      cyhal_gpio_toggle(CYBSP_USER_LED);
 
@@ -149,6 +150,9 @@ void publisher_task(void *pvParameters)
     	      printf("Publishing '%s' on the topic '%s'\n\n",
     	    		  (char *)publishInfo.pPayload,
 					  publishInfo.pTopicName);
+
+
+//    	      break; // todo: remove, this is to avoid spending messages
 
     	      /* Publish the MQTT message with the configured settings. */
     	      result = IotMqtt_PublishSync(mqttConnection,

@@ -135,7 +135,9 @@ void initUART() {
   Cy_GPIO_SetHSIOM(UART_PORT, UART_RX_NUM, UART_RX_PIN);
   Cy_GPIO_SetHSIOM(UART_PORT, UART_TX_NUM, UART_TX_PIN);
   /* Configure pins for UART operation */
-  Cy_GPIO_SetDrivemode(UART_PORT, UART_RX_NUM, CY_GPIO_DM_HIGHZ);
+  // jc: HIGHZ is correct for UART. But in the design here, the input is "patch-wired" to another controller.
+  // Cy_GPIO_SetDrivemode(UART_PORT, UART_RX_NUM, CY_GPIO_DM_HIGHZ);
+  Cy_GPIO_SetDrivemode(UART_PORT, UART_RX_NUM, CY_GPIO_DM_PULLUP);
   Cy_GPIO_SetDrivemode(UART_PORT, UART_TX_NUM, CY_GPIO_DM_STRONG_IN_OFF);
 
   /* Assign divider type and number for UART */
