@@ -123,8 +123,6 @@ void subscriber_task(void *pvParameters)
     /* To avoid compiler warnings */
     (void)pvParameters;
 
-    cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_PULLUP,
-                    CYBSP_LED_STATE_OFF);
 
     /* Subscribe with the configured parameters. */
     result = IotMqtt_SubscribeSync(mqttConnection,
@@ -154,8 +152,6 @@ void subscriber_task(void *pvParameters)
         // you can handle payloads here
         if (received_payload_status == PAYLOAD_GOOD) {
         	// todo handle payload
-            /* Initialize the User LED. */
-        	cyhal_gpio_toggle(CYBSP_USER_LED);
         }
 
     }
