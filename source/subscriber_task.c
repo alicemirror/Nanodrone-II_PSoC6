@@ -57,6 +57,8 @@
 #include "cy_retarget_io.h"
 #include "iot_mqtt.h"
 
+#include "telemetry_queue.h"
+
 /******************************************************************************
 * Macros
 ******************************************************************************/
@@ -75,10 +77,6 @@ static void mqtt_subscription_callback(void *pCallbackContext,
 /* Task handle for this task. */
 TaskHandle_t subscriber_task_handle;
 
-/* Variable to denote the current state of the user LED that is also used by 
- * the publisher task.
- */
-uint32_t current_device_state = DEVICE_OFF_STATE;
 
 /* Configure the subscription information structure. */
 IotMqttSubscription_t subscribeInfo =
@@ -89,6 +87,12 @@ IotMqttSubscription_t subscribeInfo =
     /* Configure the callback function to handle incoming MQTT messages */
     .callback.function = mqtt_subscription_callback
 };
+
+
+uint8_t message[TELEMETRY_MESSAGE_SIZE];
+
+#define PAYLOAD_GOOD                    (0x00lu)
+#define PAYLOAD_BAD                   (0x01lu)
 
 /******************************************************************************
  * Function Name: subscriber_task
@@ -109,8 +113,7 @@ void subscriber_task(void *pvParameters)
     /* Status variable */
     int result = EXIT_SUCCESS;
 
-    /* Variable to denote received LED state. */
-    uint32_t received_led_state;
+    uint32_t received_payload_status;
 
     /* Status of MQTT subscribe operation that will be communicated to MQTT 
      * client task using a message queue in case of failure in subscription.
@@ -120,7 +123,6 @@ void subscriber_task(void *pvParameters)
     /* To avoid compiler warnings */
     (void)pvParameters;
 
-    /* Initialize the User LED. */
     cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_PULLUP,
                     CYBSP_LED_STATE_OFF);
 
@@ -141,17 +143,21 @@ void subscriber_task(void *pvParameters)
         vTaskSuspend( NULL );
     }
 
-    printf("MQTT client subscribed to the topic '%.*s' successfully.\n\n", 
+    printf("MQTT client subscribed to the topic '%.*s' successfully.\n\n",
            subscribeInfo.topicFilterLength, subscribeInfo.pTopicFilter);
 
     while (true)
     {
         /* Block till a notification is received from the subscriber callback. */
-        xTaskNotifyWait(0, 0, &received_led_state, portMAX_DELAY);
-        /* Update the LED state as per received notification. */
-        cyhal_gpio_write(CYBSP_USER_LED, received_led_state);
-        /* Update the current device state extern variable. */
-        current_device_state = received_led_state;
+        xTaskNotifyWait(0, 0, &received_payload_status, portMAX_DELAY);
+
+        // you can handle payloads here
+        if (received_payload_status == PAYLOAD_GOOD) {
+        	// todo handle payload
+            /* Initialize the User LED. */
+        	cyhal_gpio_toggle(CYBSP_USER_LED);
+        }
+
     }
 }
 
@@ -181,10 +187,12 @@ static void mqtt_subscription_callback(void *pCallbackContext,
     /* Received MQTT message */
     const char *pPayload = pPublishInfo->u.message.info.pPayload;
     /* LED state that should be sent to LED task depending on received message. */
-    uint32_t subscribe_led_state = DEVICE_OFF_STATE;
+    uint32_t nanodrone_payload_state = PAYLOAD_GOOD;
 
     /* To avoid compiler warnings */
     (void) pCallbackContext;
+
+    memcpy(message, pPayload, TELEMETRY_MESSAGE_SIZE);
 
     /* Print information about the incoming PUBLISH message. */
     printf("Incoming MQTT message received:\n"
@@ -200,25 +208,9 @@ static void mqtt_subscription_callback(void *pCallbackContext,
            pPublishInfo->u.message.info.payloadLength,
            pPayload);
 
-    /* Assign the LED state depending on the received MQTT message. */
-    if ((strlen(MQTT_DEVICE_ON_MESSAGE) == pPublishInfo->u.message.info.payloadLength) &&
-        (strncmp(MQTT_DEVICE_ON_MESSAGE, pPayload, pPublishInfo->u.message.info.payloadLength) == 0))
-    {
-        subscribe_led_state = DEVICE_ON_STATE;
-    }
-    else if ((strlen(MQTT_DEVICE_OFF_MESSAGE) == pPublishInfo->u.message.info.payloadLength) &&
-             (strncmp(MQTT_DEVICE_OFF_MESSAGE, pPayload, pPublishInfo->u.message.info.payloadLength) == 0))
-    {
-        subscribe_led_state = DEVICE_OFF_STATE;
-    }
-    else
-    {
-        printf("Received MQTT message not in valid format!\n");
-        return;
-    }
 
     /* Notify the subscriber task about the received LED control message. */
-    xTaskNotify(subscriber_task_handle, subscribe_led_state, eSetValueWithoutOverwrite);
+    xTaskNotify(subscriber_task_handle, nanodrone_payload_state, eSetValueWithoutOverwrite);
 }
 
 /******************************************************************************

@@ -50,9 +50,6 @@
 #define SUBSCRIBER_TASK_PRIORITY           (2)
 #define SUBSCRIBER_TASK_STACK_SIZE         (1024 * 1)
 
-/* 32-bit task notification value denoting the device (LED) state. */
-#define DEVICE_ON_STATE                    (0x00lu)
-#define DEVICE_OFF_STATE                   (0x01lu)
 
 /*******************************************************************************
 * Extern Variables

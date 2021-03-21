@@ -15,9 +15,9 @@
 /*******************************************************************************
 * Macros
 ********************************************************************************/
-/* Task parameters for MQTT Client Task. */
+/* Task parameters for UART Task. */
 #define UART_TASK_PRIORITY       (2)
-#define UART_TASK_STACK_SIZE     (1024 * 2)
+#define UART_TASK_STACK_SIZE     (1024 * 3)
 
 
 

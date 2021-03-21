@@ -58,7 +58,7 @@
 #include "mqtt_client_config.h"
 
 /* Middleware libraries */
-#include "cy_retarget_io.h"
+//#include "cy_retarget_io.h"
 #include "cy_wcm.h"
 #include "cy_lwip.h"
 #include "cy_iot_network_secured_socket.h"
