@@ -24,7 +24,7 @@
 cy_stc_scb_uart_context_t uartContext;
 /* Stores the handle of the task that will be notified when the
 transmission is complete. */
-static TaskHandle_t xTaskToNotify = NULL;
+volatile TaskHandle_t xTaskToNotify_UART;
 
 /* The index within the target task's array of task notifications
 to use. */
@@ -60,6 +60,7 @@ void uart_task(void *pvParameters) {
   /* To avoid compiler warnings */
   (void)pvParameters;
   uint32_t ulNotificationValue;
+  xTaskToNotify_UART = NULL;
 
   while (true) {
 
@@ -71,10 +72,6 @@ void uart_task(void *pvParameters) {
         value act like a binary (rather than a counting) semaphore.  */
     ulNotificationValue = ulTaskNotifyTake(pdTRUE, portMAX_DELAY  );
 
-    // todo: timeout
-
-
-    // todo: if error handling needed, put else block
 
     if( ulNotificationValue == 1 )
     {
@@ -82,10 +79,6 @@ void uart_task(void *pvParameters) {
       // in this example, it will never handle because the UART interrupt fires exaxtly when the buffer is full
       while (0UL != (CY_SCB_UART_RECEIVE_ACTIVE & Cy_SCB_UART_GetReceiveStatus(UART_SCB, &uartContext))) {}
       /* Handle received data */
-
-
-//      cyhal_gpio_toggle(CYBSP_USER_LED);
-
 
       if(telemetry_queue) { // queue needs to be generated}
         if( xQueueSend( telemetry_queue,
@@ -171,23 +164,29 @@ void initUART() {
 
 // UART interrupt handler
 void UART_Isr() {
-  Cy_SCB_UART_Interrupt(UART_SCB, &uartContext);
+	Cy_SCB_UART_Interrupt(UART_SCB, &uartContext);
 
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//	if (uartContext.rxStatus != 32) { // not a complete receive
+//		return;
+//	}
 
-  configASSERT( xTaskToNotify != NULL );
 
-  /* Notify the task that the receive is complete. */
-  vTaskNotifyGiveFromISR( xTaskToNotify, &xHigherPriorityTaskWoken );
-  /* There are no receive in progress, so no tasks to notify. */
-  xTaskToNotify = NULL;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-  /* If xHigherPriorityTaskWoken is now set to pdTRUE then a
+	if( xTaskToNotify_UART != NULL ) {
+
+		/* Notify the task that the receive is complete. */
+		vTaskNotifyGiveFromISR( xTaskToNotify_UART, &xHigherPriorityTaskWoken );
+		/* There are no receive in progress, so no tasks to notify. */
+		xTaskToNotify_UART = NULL;
+
+		/* If xHigherPriorityTaskWoken is now set to pdTRUE then a
   context switch should be performed to ensure the interrupt
   returns directly to the highest priority task.  The macro used
   for this purpose is dependent on the port in use and may be
   called portEND_SWITCHING_ISR(). */
-  portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+		portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+	}
 }
 
 // UART activate a receive with interrupt. Wait for ever for UART_BUFFER_SIZE bytes
@@ -195,10 +194,10 @@ void UART_receive() {
   /* At this point xTaskToNotify should be NULL as no receive
   is in progress.  A mutex can be used to guard access to the
   peripheral if necessary. */
-  configASSERT( xTaskToNotify == NULL );
+  configASSERT( xTaskToNotify_UART == NULL );
 
   /* Store the handle of the calling task. */
-  xTaskToNotify = xTaskGetCurrentTaskHandle();
+  xTaskToNotify_UART = xTaskGetCurrentTaskHandle();
 
   /* Start receive operation (do not check status) */
   (void) Cy_SCB_UART_Receive(UART_SCB, rxBuffer, sizeof(rxBuffer), &uartContext);

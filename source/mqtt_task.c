@@ -58,7 +58,7 @@
 #include "mqtt_client_config.h"
 
 /* Middleware libraries */
-#include "cy_retarget_io.h"
+//#include "cy_retarget_io.h"
 #include "cy_wcm.h"
 #include "cy_lwip.h"
 #include "cy_iot_network_secured_socket.h"
@@ -68,6 +68,11 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
+
+// if you want to subscribe to the message, then comment the next line and uncomment the one below it
+#undef MQTT_SUBSCRIBE
+//#define MQTT_SUBSCRIBE
+
 /* Queue length of a message queue that is used to communicate the status of 
  * various operations.
  */
@@ -169,6 +174,8 @@ void mqtt_client_task(void *pvParameters)
         goto exit_cleanup;
     }
 
+
+#ifdef MQTT_SUBSCRIBE
     /* Create the subscriber task and cleanup if the operation fails. */
     if (pdPASS != xTaskCreate(subscriber_task, "Subscriber task", SUBSCRIBER_TASK_STACK_SIZE,
                               NULL, SUBSCRIBER_TASK_PRIORITY, &subscriber_task_handle))
@@ -179,6 +186,8 @@ void mqtt_client_task(void *pvParameters)
 
     /* Wait for the subscribe operation to complete. */
     vTaskDelay(pdMS_TO_TICKS(TASK_CREATION_DELAY_MS));
+#endif // MQTT_SUBSCRIBE
+
 
     /* Create the publisher task and cleanup if the operation fails. */
     if (pdPASS != xTaskCreate(publisher_task, "Publisher task", PUBLISHER_TASK_STACK_SIZE, 
@@ -197,8 +206,10 @@ void mqtt_client_task(void *pvParameters)
             {
                 case MQTT_PUBLISH_FAILURE:
                 {
+#ifdef MQTT_SUBSCRIBE
                     /* Unsubscribe from the topic before cleanup. */
                     mqtt_unsubscribe();
+#endif // MQTT_SUBSCRIBE
                 }
                 case MQTT_SUBSCRIBE_FAILURE:
                 case MQTT_DISCONNECT:
