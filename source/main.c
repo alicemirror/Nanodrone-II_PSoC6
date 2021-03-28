@@ -1,7 +1,7 @@
 /******************************************************************************
 * File Name:   main.c
 *
-* Description: This is the source code for MQTT Client Example in ModusToolbox.
+* Description: This is the NanoDrone II firmware for PSoC 6 firmware, based on source code for MQTT Client Example in ModusToolbox.
 *
 * Related Document: See README.md
 *
