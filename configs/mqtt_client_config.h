@@ -41,43 +41,45 @@
 #ifndef MQTT_CLIENT_CONFIG_H_
 #define MQTT_CLIENT_CONFIG_H_
 
+#define JAN
+// #define ENRICO
+
 #include "iot_mqtt.h"
 
 /*******************************************************************************
 * Macros
 ********************************************************************************/
-/* MQTT Broker/Server address and port used for the MQTT connection. */
-#define MQTT_BROKER_ADDRESS               "MY_AWS_IOT_ENDPOINT_ADDRESS"
+
+/**
+ * MQTT Broker/Server address used for the MQTT connection. This is the AWS
+ * endpoint associated to the thing
+ */
+#ifdef ENRICO
+#define MQTT_BROKER_ADDRESS               "URL"
+#else
+#ifdef JAN
+#define MQTT_BROKER_ADDRESS               "URL"
+#endif
+#endif
+
+/**
+ * MQTT Broker/Server port used for the MQTT connection.
+ */
 #define MQTT_PORT                         8883
 
-/* Set this macro to 1 if the MQTT Broker being used is hosted by AWS IoT 
+/**
+ * Set this macro to 1 if the MQTT Broker being used is hosted by AWS IoT
  * Core service, else 0.
  */
 #define AWS_IOT_MQTT_MODE                 ( 1 )
 
-/* Set this macro to 1 if a secure (TLS) connection to the MQTT Broker is  
+/**
+ * Set this macro to 1 if a secure (TLS) connection to the MQTT Broker is
  * required to be established, else 0.
  */
 #define MQTT_SECURE_CONNECTION            ( 1 )
 
-/* The MQTT topic on which the LED control messages will be published and 
- * subscribed.
- */
-#define MQTT_TOPIC                        "ledstatus"
 
-/* Configuration for the 'Last Will and Testament (LWT)'. It is an MQTT message 
- * that will be published by the MQTT broker if the MQTT connection is 
- * unexpectedly closed. This configuration is sent to the MQTT broker during 
- * MQTT connect operation and the MQTT broker will publish the Will message on 
- * the Will topic when it recognizes an unexpected disconnection from the client.
- * 
- * If you want to use the last will message, set this macro to 1, else 0.
- */
-#define ENABLE_LWT_MESSAGE                ( 0 )
-#if ENABLE_LWT_MESSAGE
-    #define MQTT_WILL_TOPIC_NAME          MQTT_TOPIC "/will"
-    #define MQTT_WILL_MESSAGE             ("MQTT client unexpectedly disconnected!")
-#endif
 
 /* Set the QoS that is associated with the MQTT publish, and subscribe messages.
  * Valid choices are 0, and 1. The MQTT library currently does not support 
@@ -96,7 +98,7 @@
 #define MQTT_KEEP_ALIVE_SECONDS           ( 60 )
 
 /* A unique client identifier to be used for every MQTT connection. */
-#define MQTT_CLIENT_IDENTIFIER            "psoc6-mqtt-client"
+#define MQTT_CLIENT_IDENTIFIER            "psoc6-mqtt-nanodrone2"
 
 /* Every active MQTT connection must have a unique client identifier. If you 
  * are using the above 'MQTT_CLIENT_IDENTIFIER' as client ID for multiple MQTT 
@@ -112,11 +114,6 @@
  */
 #define MQTT_CLIENT_IDENTIFIER_MAX_LEN    ( 24 )
 
-/* MQTT messages which are published and subscribed on the MQTT_TOPIC that
- * controls the device (user LED in this example) state.
- */
-#define MQTT_DEVICE_ON_MESSAGE            "TURN ON"
-#define MQTT_DEVICE_OFF_MESSAGE           "TURN OFF"
 
 /* As per Internet Assigned Numbers Authority (IANA) the port numbers assigned 
  * for MQTT protocol are 1883 for non-secure connections and 8883 for secure
@@ -133,24 +130,44 @@
  */
 #define MQTT_ALPN_PROTOCOL_NAME           "x-amzn-mqtt-ca"
 
+
+
+#ifdef ENRICO
+
 /* Configure the below credentials in case of a secure MQTT connection. */
 /* PEM-encoded client certificate */
 #define CLIENT_CERTIFICATE      \
 "-----BEGIN CERTIFICATE-----\n" \
-"........base64 data........\n" \
-"-----END CERTIFICATE-----"
+
+"\n-----END CERTIFICATE-----"
 
 /* PEM-encoded client private key */
 #define CLIENT_PRIVATE_KEY          \
 "-----BEGIN RSA PRIVATE KEY-----\n" \
-"..........base64 data..........\n" \
-"-----END RSA PRIVATE KEY-----"
+"\n-----END RSA PRIVATE KEY-----"
+
+#else
+#ifdef JAN
+
+/* Configure the below credentials in case of a secure MQTT connection. */
+/* PEM-encoded client certificate */
+#define CLIENT_CERTIFICATE      \
+"-----BEGIN CERTIFICATE-----\n"\
+"-----END CERTIFICATE-----\n"
+
+/* PEM-encoded client private key */
+#define CLIENT_PRIVATE_KEY          \
+"-----BEGIN RSA PRIVATE KEY-----\n"\
+"-----END RSA PRIVATE KEY-----\n"
+
+#endif
+#endif
+
 
 /* PEM-encoded Root CA certificate */
 #define ROOT_CA_CERTIFICATE     \
 "-----BEGIN CERTIFICATE-----\n" \
-"........base64 data........\n" \
-"-----END CERTIFICATE-----"
+"\n-----END CERTIFICATE-----"
 
 /******************************************************************************
 * Global Variables

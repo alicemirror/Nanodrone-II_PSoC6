@@ -18,8 +18,6 @@
 
 #include "telemetry_queue.h"
 
-#include "cybsp.h"  // for the user led only
-
 /* Allocate context for UART operation */
 cy_stc_scb_uart_context_t uartContext;
 /* Stores the handle of the task that will be notified when the

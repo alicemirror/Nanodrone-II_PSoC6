@@ -1,8 +1,8 @@
 /******************************************************************************
 * File Name:   subscriber_task.c
 *
-* Description: This file contains the task that initializes the user LED GPIO,
-*              subscribes to the topic 'MQTT_TOPIC', and actuates the user LED
+* Description: This file contains the optional task that
+*              subscribes to the topic 'MQTT_TOPIC_NANODRONE', and does currently nothing
 *              based on the notifications received from the MQTT subscriber
 *              callback.
 *
@@ -98,8 +98,8 @@ uint8_t message[TELEMETRY_MESSAGE_SIZE];
  * Function Name: subscriber_task
  ******************************************************************************
  * Summary:
- *  Task that sets up the user LED GPIO, subscribes to topic - 'MQTT_TOPIC',
- *  and controls the user LED based on the received task notification.
+ *  Task that subscribes to topic - 'MQTT_TOPIC_NANODRONE',
+ *  and ignores the returned payload currently.
  *
  * Parameters:
  *  void *pvParameters : Task parameter defined during task creation (unused)
@@ -162,8 +162,8 @@ void subscriber_task(void *pvParameters)
  ******************************************************************************
  * Summary:
  *  Callback to handle incoming MQTT messages. This callback prints the 
- *  contents of an incoming message and notifies the subscriber task with the  
- *  LED state as per the received message.
+ *  contents of an incoming message and notifies the subscriber task
+ *  with a PAYLOAD GOOD message.
  *
  * Parameters:
  *  void *pCallbackContext : Parameter defined during MQTT Subscribe operation
@@ -182,7 +182,7 @@ static void mqtt_subscription_callback(void *pCallbackContext,
 {
     /* Received MQTT message */
     const char *pPayload = pPublishInfo->u.message.info.pPayload;
-    /* LED state that should be sent to LED task depending on received message. */
+    /* state that should be sent to  task depending on received message. */
     uint32_t nanodrone_payload_state = PAYLOAD_GOOD;
 
     /* To avoid compiler warnings */
@@ -205,7 +205,7 @@ static void mqtt_subscription_callback(void *pCallbackContext,
            pPayload);
 
 
-    /* Notify the subscriber task about the received LED control message. */
+    /* Notify the subscriber task about the received a subscribed message. */
     xTaskNotify(subscriber_task_handle, nanodrone_payload_state, eSetValueWithoutOverwrite);
 }
 

@@ -1,6 +1,11 @@
 # NanoDrone II PSoC 6
 
 
+## Documentation
+- [NonoDrone II workshop](https://www.element14.com/community/events/5782/l/arduino-day-workshop-nanodrone-ii-ai-and-computer-vision-with-lora-win-a-psoc6-and-a-pair-of-mkr-1300-boards)
+- [PSoC6 firmware documentation series](https://www.element14.com/community/groups/embedded/blog/2021/03/13/psoc6-and-modustoolbox-uart-receiver-with-freertos)
+
+
 ## Requirements
 
 - [ModusToolbox® software](https://www.cypress.com/products/modustoolbox-software-environment) v2.2
@@ -23,12 +28,13 @@
 - [PSoC 6 Wi-Fi BT Prototyping Kit](https://www.cypress.com/CY8CPROTO-062-4343W) (`CY8CPROTO-062-4343W`) - Default value of `TARGET`
 - [PSoC 62S2 Wi-Fi BT Pioneer Kit](https://www.cypress.com/CY8CKIT-062S2-43012) (`CY8CKIT-062S2-43012`)
 
-**Note:** This example requires PSoC 6 device with at least 2 MB flash and 1 MB SRAM and therefore does not support other PSoC 6 MCU kits.
+**Note:** This project requires PSoC 6 device with at least 2 MB flash and 1 MB SRAM and therefore does not support other PSoC 6 MCU kits.
 
 
 ## Hardware Setup
 
 This example uses the board's default configuration. See the kit user guide to ensure that the board is configured correctly.
+Connect a UART signal to 10.0, 9600 / 8 / 1 / N 
 
 
 ## Software Setup
@@ -37,62 +43,6 @@ Install a terminal emulator if you don't have one. Instructions in this document
 
 This example requires no additional software or tools.
 
-
-## Using the Code Example
-
-### In Eclipse IDE for ModusToolbox:
-
-1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox Application**). This launches the [Project Creator](http://www.cypress.com/ModusToolboxProjectCreator) tool.
-
-2. Pick a kit supported by the code example from the list shown in the **Project Creator - Choose Board Support Package (BSP)** dialog.
-
-   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the [Library Manager](https://www.cypress.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. To access the Library Manager, click the link from the **Quick Panel**.
-
-   You can also just start the application creation process again and select a different kit.
-
-   If you want to use the application for a kit not listed here, you may need to update the source files. If the kit does not have the required resources, the application may not work.
-
-3. In the **Project Creator - Select Application** dialog, choose the example by enabling the checkbox.
-
-4. Optionally, change the suggested **New Application Name**.
-
-5. Enter the local path in the **Application(s) Root Path** field to indicate where the application needs to be created.
-
-   Applications that can share libraries can be placed in the same root path.
-
-6. Click **Create** to complete the application creation process.
-
-For more details, see the [Eclipse IDE for ModusToolbox User Guide](https://www.cypress.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*).
-
-
-### In Command-line Interface (CLI):
-
-ModusToolbox provides the Project Creator as both a GUI tool and a command line tool to easily create one or more ModusToolbox applications. See the "Project Creator Tools" section of the [ModusToolbox User Guide](https://www.cypress.com/ModusToolboxUserGuide) for more details.
-
-Alternatively, you can manually create the application using the following steps:
-
-1. Download and unzip this repository onto your local machine, or clone the repository.
-
-2. Open a CLI terminal and navigate to the application folder.
-
-   On Linux and macOS, you can use any terminal application. On Windows, open the **modus-shell** app from the Start menu.
-
-   **Note:** The cloned application contains a default BSP file (*TARGET_xxx.mtb*) in the *deps* folder. Use the [Library Manager](https://www.cypress.com/ModusToolboxLibraryManager) (`make modlibs` command) to select and download a different BSP file, if required. If the selected kit does not have the required resources or is not [supported](#supported-kits-make-variable-target), the application may not work.
-
-3. Import the required libraries by executing the `make getlibs` command.
-
-Various CLI tools include a `-h` option that prints help information to the terminal screen about that tool. For more details, see the [ModusToolbox User Guide](https://www.cypress.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox install directory}/docs_{version}/mtb_user_guide.pdf*).
-
-
-### In Third-party IDEs:
-
-1. Follow the instructions from the [CLI](#in-command-line-interface-cli) section to create the application, and import the libraries using the `make getlibs` command.
-
-2. Export the application to a supported IDE using the `make <ide>` command.
-
-    For a list of supported IDEs and more details, see the "Exporting to IDEs" section of the [ModusToolbox User Guide](https://www.cypress.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox install directory}/docs_{version}/mtb_user_guide.pdf*.
-
-3. Follow the instructions displayed in the terminal to create or import the application as an IDE project.
 
 
 ## Operation
@@ -200,9 +150,6 @@ Various CLI tools include a `-h` option that prints help information to the term
 
    After programming, the application starts automatically. Observe the messages on the UART terminal, and wait for the device to make all the required connections.
 
-   **Figure 1. UART Terminal Showing the Application Initialization Status**
-
-   ![](images/application_initialization.png)
 
 
 ## Debugging
@@ -213,7 +160,7 @@ You can debug the example to step through the code. In the IDE, use the **\<Appl
 
 ## Design and Implementation
 
-This example implements three RTOS tasks: MQTT Client, Publisher, and Subscriber. The main function initializes the BSP and the retarget-io library, and creates the MQTT Client task.
+This project implements three RTOS tasks: MQTT Client, Publisher, and (optionally  via MQTT_SUBSCRIBE in mqtt_task.c) Subscriber. The main function initializes the BSP and the retarget-io library, and creates the MQTT Client task.
 
 The MQTT Client task initializes the Wi-Fi Connection Manager (WCM) and connects to a Wi-Fi access point (AP) using the Wi-Fi network credentials that are configured in *wifi_config.h*. Upon a successful Wi-Fi connection, the task initializes the MQTT library and establishes a connection with the MQTT Broker/Server.
 
@@ -221,13 +168,15 @@ The MQTT connection is configured to be secure by default; the secure connection
 
 After a successful MQTT connection, the Subscriber and Publisher tasks are created. The MQTT Client task then waits for messages from the other two tasks and callbacks, and handles the cleanup operations of various libraries if the messages indicate failure.
 
-The Subscriber task initializes the user LED GPIO and subscribes to messages on the topic specified by the `MQTT_TOPIC_NANODRONE` macro that can be configured in *mqtt_client_config.h*. When the subscribe operation fails, a message is sent to the MQTT Client task over a message queue. When the Subscriber task receives a message from the Broker, it turns the user LED ON or OFF depending on whether the received message is "TURN ON" or "TURN OFF".
+The Subscriber task subscribes to messages on the topic specified by the `MQTT_TOPIC_NANODRONE` macro that can be configured in *mqtt_topic_config.h*. When the subscribe operation fails, a message is sent to the MQTT Client task over a message queue. When the Subscriber task receives a message from the Broker, it turns the user LED ON or OFF depending on whether the received message is "TURN ON" or "TURN OFF".
 
-The Publisher task sets up the user button GPIO and configures an interrupt for the button. The ISR notifies the Publisher task upon a button press. The Publisher task then publishes messages (*TURN ON* / *TURN OFF*) on the topic specified by the `MQTT_TOPIC_NANODRONE` macro. When the publish operation fails, a message is sent over a queue to the MQTT Client task.
+The UART task sets up UART_1 and configures an interrupt for receiving 16 bytes. The ISR notifies the UART task upon data receiving.
+
+The data is pushed on the telemetry queue and wakes up the Publisher task. 
+
+The Publisher task then publishes payload on the topic specified by the `MQTT_TOPIC_NANODRONE` macro. When the publish operation fails, a message is sent over a queue to the MQTT Client task.
 
 When a failure has been encountered, the MQTT Client task handles the cleanup operations of various libraries, thereby terminating any existing MQTT and Wi-Fi connections and deleting the MQTT, Publisher and Subscriber tasks.
-
-**Note:** The CY8CPROTO-062-4343W board shares the same GPIO for the user button (USER BTN) and the CYW4343W host wakeup pin. Because this example uses the GPIO for interfacing with the user button to toggle the LED, the SDIO interrupt to wake up the host is disabled by setting `CY_WIFI_HOST_WAKE_SW_FORCE` to '0' in the Makefile through the `DEFINES` variable.
 
 
 ### Resources and Settings
@@ -282,13 +231,16 @@ For PSoC 6 MCU devices, see [How to Design with PSoC 6 MCU - KBA223067](https://
 
 ## Document History
 
-Document Title: *CE229889* - *AnyCloud Example: MQTT Client*
+Document Title: *Nanodrone II PSoC6* - *UART to MQTT *
+From Document Title: *CE229889* - *AnyCloud Example: MQTT Client*
 
 | Version | Description of Change |
 | ------- | --------------------- |
 | 1.0.0   | New code example.      |
 | 1.1.0   | Minor bug fixes and Makefile updates to sync with BSP changes. |
 | 2.0.0   | Major update to support ModusToolbox software v2.2, added support for Mosquitto Broker.<br /> This version is not backward compatible with ModusToolbox software v2.1.  |
+| 3.0.0   | The example was basis and inspiration for Nanodrone II PSoC 6 firmware  |
+
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.
