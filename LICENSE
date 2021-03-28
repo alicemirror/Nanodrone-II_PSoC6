@@ -1,4 +1,3 @@
-<<<<<<< HEAD
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
@@ -673,7 +672,10 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
-=======
+
+
+
+
 CYPRESS END USER LICENSE AGREEMENT
 
 PLEASE READ THIS END USER LICENSE AGREEMENT ("Agreement") CAREFULLY BEFORE
@@ -884,4 +886,3 @@ replacing any and all prior agreements, communications, and understandings
 will be deemed effective when actually received and must be sent to Cypress
 Semiconductor Corporation, ATTN: Chief Legal Officer, 198 Champion Court, San
 Jose, CA 95134 USA.
->>>>>>> refs/remotes/origin/AWS_IoT
