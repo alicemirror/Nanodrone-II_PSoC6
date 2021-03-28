@@ -186,8 +186,7 @@ When a failure has been encountered, the MQTT Client task handles the cleanup op
 | Resource  |  Alias/Object     |    Purpose     |
 | :------- | :------------    | :------------ |
 | UART (HAL)|cy_retarget_io_uart_obj| UART HAL object used by Retarget-IO for Debug UART port  |
-| GPIO (HAL)    | CYBSP_USER_LED         | User LED controlled by the Subscriber based on incoming MQTT messages  |
-| GPIO (HAL)    | CYBSP_USER_BTN         | User Button used to notify the Publisher to publish MQTT messages |
+| SCB1 (HAL)    | UART 1 10.0            | UART to receive NanoDrone II payload, 9600 / 8 / 1 / N  |
 
 
 ## Related Resources
