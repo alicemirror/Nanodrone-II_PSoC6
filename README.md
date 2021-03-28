@@ -230,7 +230,7 @@ For PSoC 6 MCU devices, see [How to Design with PSoC 6 MCU - KBA223067](https://
 
 ## Document History
 
-Document Title: *Nanodrone II PSoC6* - *UART to MQTT *
+Document Title: *Nanodrone II PSoC6* - *UART to MQTT*
 
 From Document Title: *CE229889* - *AnyCloud Example: MQTT Client*
 
