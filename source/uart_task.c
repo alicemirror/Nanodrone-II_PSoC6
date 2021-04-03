@@ -36,6 +36,22 @@ cy_stc_scb_uart_context_t uartContext;
 
 void UART_receive();
 
+// low power support
+cy_stc_syspm_callback_params_t callback_params =
+{
+    .base = UART_SCB,
+    .context = &uartContext
+};
+
+cy_stc_syspm_callback_t uart_deep_sleep_cb =
+{
+    Cy_SCB_UART_DeepSleepCallback,
+    CY_SYSPM_DEEPSLEEP,
+	0,
+    &callback_params,
+	NULL,
+	NULL
+};
 
 extern QueueHandle_t telemetry_queue;
 
@@ -102,7 +118,7 @@ void initUART() {
       .enableMutliProcessorMode   = false,
       .smartCardRetryOnNack       = false,
       .irdaInvertRx               = false,
-      .irdaEnableLowPowerReceiver = false,
+      .irdaEnableLowPowerReceiver = true,
       .oversample                 = UART_OVERSAMPLE,
       .enableMsbFirst             = false,
       .dataWidth                  = 8UL,
@@ -158,6 +174,9 @@ void initUART() {
   (void) Cy_SysInt_Init(&uartIntrConfig, &UART_Isr);
   NVIC_EnableIRQ(UART_INTR_NUM);
 
+  /* Register a deep sleep callback for UART block. */
+  Cy_SysPm_RegisterCallback(&uart_deep_sleep_cb);
+
   /* Enable UART to operate */
   Cy_SCB_UART_Enable(UART_SCB);
 }
@@ -165,11 +184,6 @@ void initUART() {
 // UART interrupt handler
 void UART_Isr() {
 	Cy_SCB_UART_Interrupt(UART_SCB, &uartContext);
-
-//	if (uartContext.rxStatus != 32) { // not a complete receive
-//		return;
-//	}
-
 
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
