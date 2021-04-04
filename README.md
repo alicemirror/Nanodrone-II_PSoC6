@@ -163,6 +163,14 @@ You can debug the example to step through the code. In the IDE, use the **\<Appl
 
 **Note:** **(Only while debugging)** On the CM4 CPU, some code in `main()` may execute before the debugger halts at the beginning of `main()`. This means that some code executes twice - once before the debugger stops execution, and again after the debugger resets the program counter to the beginning of `main()`. See [KBA231071](https://community.cypress.com/docs/DOC-21143) to learn about this and for the workaround.
 
+
+## Run without debugger (stand-alone release mode)
+
+Before using the project without the debugger attached, program it with the release binary.
+
+In the IDE, use the **\<Application Name> Program (KitProg3_MiniProg4)** configuration in the **Quick Panel**.
+
+
 ## Design and Implementation
 
 This project implements three RTOS tasks: MQTT Client, Publisher, and (optionally  via MQTT_SUBSCRIBE in mqtt_task.c) Subscriber. The main function initializes the BSP and the retarget-io library, and creates the MQTT Client task.
