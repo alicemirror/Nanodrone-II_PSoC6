@@ -118,7 +118,7 @@ void initUART() {
       .enableMutliProcessorMode   = false,
       .smartCardRetryOnNack       = false,
       .irdaInvertRx               = false,
-      .irdaEnableLowPowerReceiver = true,
+      .irdaEnableLowPowerReceiver = false,
       .oversample                 = UART_OVERSAMPLE,
       .enableMsbFirst             = false,
       .dataWidth                  = 8UL,
