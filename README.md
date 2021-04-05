@@ -183,13 +183,21 @@ After a successful MQTT connection, the Subscriber and Publisher tasks are creat
 
 The Subscriber task subscribes to messages on the topic specified by the `MQTT_TOPIC_NANODRONE` macro that can be configured in *mqtt_topic_config.h*. When the subscribe operation fails, a message is sent to the MQTT Client task over a message queue. When the Subscriber task receives a message from the Broker, it turns the user LED ON or OFF depending on whether the received message is "TURN ON" or "TURN OFF".
 
-The UART task sets up UART_1 and configures an interrupt for receiving 16 bytes. The ISR notifies the UART task upon data receiving.
+The UART task sets up UART_1 and configures an interrupt for receiving 26 bytes. The ISR notifies the UART task upon data receiving.
 
 The data is pushed on the telemetry queue and wakes up the Publisher task. 
 
 The Publisher task then publishes payload on the topic specified by the `MQTT_TOPIC_NANODRONE` macro. When the publish operation fails, a message is sent over a queue to the MQTT Client task.
 
 When a failure has been encountered, the MQTT Client task handles the cleanup operations of various libraries, thereby terminating any existing MQTT and Wi-Fi connections and deleting the MQTT, Publisher and Subscriber tasks.
+
+####payload datagram
+
+The payload is a 26 bytes (ascii characters) array and contains:
+1. longitude +9999999 (5 decimals)
+2. latitude +99999999 (5 decimals)
+3. time hhmmss
+4. image rating 999
 
 
 ### Resources and Settings

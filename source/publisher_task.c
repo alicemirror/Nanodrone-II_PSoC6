@@ -145,7 +145,7 @@ void publisher_task(void *pvParameters)
     	      cyhal_gpio_toggle(CYBSP_USER_LED);
 
     	      publishInfo.pPayload = message;
-    	      publishInfo.payloadLength = TELEMETRY_MESSAGE_SIZE;
+    	      publishInfo.payloadLength = sizeof(message);;
 
     	      printf("Publishing '%s' on the topic '%s'\n\n",
     	    		  (char *)publishInfo.pPayload,
