@@ -37,7 +37,7 @@
 
 
 /* application dependent UART settings */
-#define UART_BUFFER_SIZE 16
+#define UART_BUFFER_SIZE 26
 
 
 
