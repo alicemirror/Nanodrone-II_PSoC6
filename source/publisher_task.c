@@ -118,7 +118,7 @@ void publisher_task(void *pvParameters) {
     initTelemetryQueue();
     printf("TELEMETRY Message Queue created\n\n");
 
-    for (;;) {
+    while (true) {
         if (xQueueReceive(telemetry_queue, message, portMAX_DELAY)) {
             cyhal_gpio_toggle(CYBSP_USER_LED);
 
