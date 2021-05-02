@@ -126,10 +126,6 @@ void publisher_task(void *pvParameters)
     /* To avoid compiler warnings */
     (void)pvParameters;
 
-    cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_PULLUP,
-                    CYBSP_LED_STATE_OFF);
-
-
     initTelemetryQueue();
     printf("TELEMETRY Message Queue created\n\n");
 

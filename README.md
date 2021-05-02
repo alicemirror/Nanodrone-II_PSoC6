@@ -7,7 +7,7 @@ The project software and components
 
 
 ## Documentation
-- [NonoDrone II workshop](https://www.element14.com/community/events/5782/l/arduino-day-workshop-nanodrone-ii-ai-and-computer-vision-with-lora-win-a-psoc6-and-a-pair-of-mkr-1300-boards)
+- [NanoDrone II workshop](https://www.element14.com/community/events/5782/l/arduino-day-workshop-nanodrone-ii-ai-and-computer-vision-with-lora-win-a-psoc6-and-a-pair-of-mkr-1300-boards)
 - [PSoC6 firmware documentation series](https://www.element14.com/community/groups/embedded/blog/2021/03/13/psoc6-and-modustoolbox-uart-receiver-with-freertos)
 
 

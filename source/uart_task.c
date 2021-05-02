@@ -21,7 +21,7 @@
 /* Allocate context for UART operation */
 cy_stc_scb_uart_context_t uartContext;
 /* Stores the handle of the task that will be notified when the
-transmission is complete. */
+receive is complete. */
 volatile TaskHandle_t xTaskToNotify_UART;
 
 /* The index within the target task's array of task notifications
@@ -195,10 +195,10 @@ void UART_Isr() {
 		xTaskToNotify_UART = NULL;
 
 		/* If xHigherPriorityTaskWoken is now set to pdTRUE then a
-  context switch should be performed to ensure the interrupt
-  returns directly to the highest priority task.  The macro used
-  for this purpose is dependent on the port in use and may be
-  called portEND_SWITCHING_ISR(). */
+		context switch should be performed to ensure the interrupt
+		returns directly to the highest priority task.  The macro used
+		for this purpose is dependent on the port in use and may be
+		called portEND_SWITCHING_ISR(). */
 		portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 	}
 }
