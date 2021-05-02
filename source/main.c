@@ -86,6 +86,8 @@ int main()
     /* To avoid compiler warnings. */
     (void) result;
 
+    cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT, CYHAL_GPIO_DRIVE_PULLUP,
+                    CYBSP_LED_STATE_OFF);
 
     initUART();
 
