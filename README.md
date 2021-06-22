@@ -262,6 +262,11 @@ From Document Title: *CE229889* - *AnyCloud Example: MQTT Client*
 | 2.0.0   | Major update to support ModusToolbox software v2.2, added support for Mosquitto Broker.<br /> This version is not backward compatible with ModusToolbox software v2.1.  |
 | 3.0.0   | The example was basis and inspiration for Nanodrone II PSoC 6 firmware  |
 
+
+## GIT 
+Password login decomissioned 31/8/2021
+
+
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.
