@@ -124,7 +124,6 @@ void publisher_task(void *pvParameters) {
 
             publishInfo.pPayload = message;
             publishInfo.payloadLength = sizeof(message);
-            ;
 
             printf("Publishing '%s' on the topic '%s'\n\n",
                     (char*) publishInfo.pPayload, publishInfo.pTopicName);
