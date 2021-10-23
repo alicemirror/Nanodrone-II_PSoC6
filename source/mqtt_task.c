@@ -211,6 +211,7 @@ void mqtt_client_task(void *pvParameters)
                     mqtt_unsubscribe();
 #endif // MQTT_SUBSCRIBE
                 }
+                // no break
                 case MQTT_SUBSCRIBE_FAILURE:
                 case MQTT_DISCONNECT:
                 {
