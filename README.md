@@ -13,9 +13,9 @@ The project software and components
 
 ## Requirements
 
-- [ModusToolbox® software](https://www.cypress.com/products/modustoolbox-software-environment) v2.2
+- [ModusToolbox® software](https://www.cypress.com/products/modustoolbox-software-environment) v2.4
 
-    **Note:** This code example version requires ModusToolbox software version 2.2 or later and is not backward compatible with v2.1 or older versions. If you cannot move to ModusToolbox v2.2, use the latest compatible version of this example: [latest-v1.X](https://github.com/cypresssemiconductorco/mtb-example-anycloud-mqtt-client/tree/latest-v1.X).
+    **Note:** This code example version requires ModusToolbox software version 2.4 or later and is not backward compatible with v2.1 or older versions. If you cannot move to ModusToolbox v2.2, use the latest compatible version of this example: [latest-v1.X](https://github.com/cypresssemiconductorco/mtb-example-anycloud-mqtt-client/tree/latest-v1.X).
 
 - Board Support Package (BSP) minimum required version: 2.0.0
 - Programming Language: C
