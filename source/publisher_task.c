@@ -86,7 +86,7 @@ IotMqttPublishInfo_t publishInfo = { .qos = (IotMqttQos_t) MQTT_MESSAGES_QOS,
 
 extern QueueHandle_t telemetry_queue;
 
-uint8_t message[TELEMETRY_MESSAGE_SIZE];
+uint8_t pub_message[TELEMETRY_MESSAGE_SIZE];
 
 /******************************************************************************
  * Function Name: publisher_task
@@ -119,11 +119,11 @@ void publisher_task(void *pvParameters) {
     printf("TELEMETRY Message Queue created\n\n");
 
     while (true) {
-        if (xQueueReceive(telemetry_queue, message, portMAX_DELAY)) {
+        if (xQueueReceive(telemetry_queue, pub_message, portMAX_DELAY)) {
             cyhal_gpio_toggle(CYBSP_USER_LED);
 
-            publishInfo.pPayload = message;
-            publishInfo.payloadLength = sizeof(message);
+            publishInfo.pPayload = pub_message;
+            publishInfo.payloadLength = sizeof(pub_message);
             ;
 
             printf("Publishing '%s' on the topic '%s'\n\n",
