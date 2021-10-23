@@ -89,7 +89,7 @@ IotMqttSubscription_t subscribeInfo =
 };
 
 
-uint8_t message[TELEMETRY_MESSAGE_SIZE];
+uint8_t sub_message[TELEMETRY_MESSAGE_SIZE];
 
 #define PAYLOAD_GOOD                    (0x00lu)
 #define PAYLOAD_BAD                   (0x01lu)
@@ -188,7 +188,7 @@ static void mqtt_subscription_callback(void *pCallbackContext,
     /* To avoid compiler warnings */
     (void) pCallbackContext;
 
-    memcpy(message, pPayload, TELEMETRY_MESSAGE_SIZE);
+    memcpy(sub_message, pPayload, TELEMETRY_MESSAGE_SIZE);
 
     /* Print information about the incoming PUBLISH message. */
     printf("Incoming MQTT message received:\n"
